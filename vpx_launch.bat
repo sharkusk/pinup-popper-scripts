@@ -6,7 +6,7 @@ REM This keeps all of the code co-located and prevents accidents (i.e. bugs).
 REM "restore_settings.bat" should be called from the close script.
 
 REM Altmodes supported:
-REM backglass - do not run a pup-pack and use a backglass named table.directb3s.BG
+REM backglass - do not run a pup-pack and use a backglass named [tablename].directb2s.BG
 REM origsound - use the original rom sound with a forced backglass
 REM altsound - use the altsound with a forced backglass
 REM pinsound - use the pinsound with a forced backglass
