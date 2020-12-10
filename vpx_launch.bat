@@ -17,32 +17,6 @@ CD /d "[DIREMU]"
 REM Initialize a file that is going to restore any settings we change when we close
 ECHO @ECHO OFF> "[STARTDIR]restore_settings.bat"
 
-REM Ghostbusters requires freezy 1.71 so copy that version (be sure to name it 'DmdDevice.dll.spagb100' in VPinMame directory)
-IF "[?ROM?]"=="spagb100" (
-    IF EXIST "[DIREMU]\VPinMAME\DmdDevice.dll.180" (
-        REM Something bad happened and our backup got left around.
-        REM We will assume that the spagb100 version of dmddevice is still in place.
-    ) ELSE (
-        REM Backup current version of DMD Device
-        COPY /Y "[DIREMU]\VPinMAME\DmdDevice.ini" "[DIREMU]\VPinMAME\DmdDevice.ini.180"
-        COPY /Y "[DIREMU]\VPinMAME\DmdDevice.dll" "[DIREMU]\VPinMAME\DmdDevice.dll.180"
-
-        REM Copy version needed by Ghostbusters
-        COPY /Y "[DIREMU]\VPinMAME\DmdDevice.ini.spagb100" "[DIREMU]\VPinMAME\DmdDevice.ini"
-        COPY /Y "[DIREMU]\VPinMAME\DmdDevice.dll.spagb100" "[DIREMU]\VPinMAME\DmdDevice.dll"
-    )
-
-    REM -----------  CLEANUP ON CLOSE -----------
-    REM Need to wait for VP to release the DLL before we can copy
-    ECHO TIMEOUT /t 2 /nobreak>> "[STARTDIR]restore_settings.bat"
-    REM Restore previous version on table close
-    ECHO COPY /Y "[DIREMU]\VPinMAME\DmdDevice.ini.180" "[DIREMU]\VPinMAME\DmdDevice.ini">> "[STARTDIR]restore_settings.bat"
-    ECHO COPY /Y "[DIREMU]\VPinMAME\DmdDevice.dll.180" "[DIREMU]\VPinMAME\DmdDevice.dll">> "[STARTDIR]restore_settings.bat"
-    REM Delete the backup when the table closes
-    ECHO DEL "[DIREMU]\VPinMAME\DmdDevice.ini.180">> "[STARTDIR]restore_settings.bat"
-    ECHO DEL "[DIREMU]\VPinMAME\DmdDevice.dll.180">> "[STARTDIR]restore_settings.bat"
-)
-
 SET use_backglass=0
 
 IF "[ALTMODE]"=="backglass" (
