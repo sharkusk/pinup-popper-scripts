@@ -15,7 +15,7 @@ START "" "[STARTDIR]Launch\VPXSTARTER.exe" 30 10 60 “Visual Pinball Player” 
 CD /d "[DIREMU]"
 
 REM Initialize a file that is going to restore any settings we change when we close
-ECHO @ECHO OFF> [STARTDIR]"restore_settings.bat"
+ECHO @ECHO OFF> "[STARTDIR]restore_settings.bat"
 
 REM Ghostbusters requires freezy 1.71 so copy that version (be sure to name it 'DmdDevice.dll.spagb100' in VPinMame directory)
 IF "[?ROM?]"=="spagb100" (
@@ -34,13 +34,13 @@ IF "[?ROM?]"=="spagb100" (
 
     REM -----------  CLEANUP ON CLOSE -----------
     REM Need to wait for VP to release the DLL before we can copy
-    ECHO TIMEOUT /t 2 /nobreak>> [STARTDIR]"restore_settings.bat"
+    ECHO TIMEOUT /t 2 /nobreak>> "[STARTDIR]restore_settings.bat"
     REM Restore previous version on table close
-    ECHO COPY /Y "[DIREMU]\VPinMAME\DmdDevice.ini.180" "[DIREMU]\VPinMAME\DmdDevice.ini">> [STARTDIR]"restore_settings.bat"
-    ECHO COPY /Y "[DIREMU]\VPinMAME\DmdDevice.dll.180" "[DIREMU]\VPinMAME\DmdDevice.dll">> [STARTDIR]"restore_settings.bat"
+    ECHO COPY /Y "[DIREMU]\VPinMAME\DmdDevice.ini.180" "[DIREMU]\VPinMAME\DmdDevice.ini">> "[STARTDIR]restore_settings.bat"
+    ECHO COPY /Y "[DIREMU]\VPinMAME\DmdDevice.dll.180" "[DIREMU]\VPinMAME\DmdDevice.dll">> "[STARTDIR]restore_settings.bat"
     REM Delete the backup when the table closes
-    ECHO DEL "[DIREMU]\VPinMAME\DmdDevice.ini.180">> [STARTDIR]"restore_settings.bat"
-    ECHO DEL "[DIREMU]\VPinMAME\DmdDevice.dll.180">> [STARTDIR]"restore_settings.bat"
+    ECHO DEL "[DIREMU]\VPinMAME\DmdDevice.ini.180">> "[STARTDIR]restore_settings.bat"
+    ECHO DEL "[DIREMU]\VPinMAME\DmdDevice.dll.180">> "[STARTDIR]restore_settings.bat"
 )
 
 SET use_backglass=0
@@ -48,6 +48,12 @@ SET use_backglass=0
 IF "[ALTMODE]"=="backglass" (
     SET use_backglass=1
 )
+
+REM Force cabinet mode to prevent PinMAME splash screen
+REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v cabinet_mode /t REG_DWORD /d 1 /f
+
+REM Skip Pinball Test to Speed Up Table Load
+REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v cheat /t REG_DWORD /d 1 /f
 
 REM Store the current audio settings
 REM QUERY returns multiple lines, we only care about the actual value, so extract and store in variable
@@ -59,8 +65,8 @@ IF "[ALTMODE]"=="origsound" (
     REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d 0 /f
 
     REM -----------  CLEANUP ON CLOSE -----------
-    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d %sound_mode% /f>> [STARTDIR]"restore_settings.bat"
-    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d %resampling_quality% /f>> [STARTDIR]"restore_settings.bat"
+    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d %sound_mode% /f>> "[STARTDIR]restore_settings.bat"
+    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d %resampling_quality% /f>> "[STARTDIR]restore_settings.bat"
 
     SET use_backglass=1
 )
@@ -70,8 +76,8 @@ IF "[ALTMODE]"=="altsound" (
     REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d 1 /f
 
     REM -----------  CLEANUP ON CLOSE -----------
-    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d %sound_mode% /f>> [STARTDIR]"restore_settings.bat"
-    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d %resampling_quality% /f>> [STARTDIR]"restore_settings.bat"
+    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d %sound_mode% /f>> "[STARTDIR]restore_settings.bat"
+    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d %resampling_quality% /f>> "[STARTDIR]restore_settings.bat"
 
     SET use_backglass=1
 )
@@ -81,8 +87,8 @@ IF "[ALTMODE]"=="pinsound" (
     REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d 1 /f
 
     REM -----------  CLEANUP ON CLOSE -----------
-    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d %sound_mode% /f>> [STARTDIR]"restore_settings.bat"
-    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d %resampling_quality% /f>> [STARTDIR]"restore_settings.bat"
+    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d %sound_mode% /f>> "[STARTDIR]restore_settings.bat"
+    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d %resampling_quality% /f>> "[STARTDIR]restore_settings.bat"
 
     SET use_backglass=1
 )
@@ -96,7 +102,7 @@ IF %use_backglass%==1 (
         COPY /Y "[DIRGAME]\[GAMENAME].directb2s.BG" "[DIRGAME]\[GAMENAME].directb2s"
 
         REM -----------  CLEANUP ON CLOSE -----------
-        ECHO DEL "[DIRGAME]\[GAMENAME].directb2s">> [STARTDIR]"restore_settings.bat"
+        ECHO DEL "[DIRGAME]\[GAMENAME].directb2s">> "[STARTDIR]restore_settings.bat"
     )
 )
 
