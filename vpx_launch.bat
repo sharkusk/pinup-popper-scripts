@@ -23,17 +23,11 @@ IF "[ALTMODE]"=="backglass" (
     SET use_backglass=1
 )
 
-REM Force cabinet mode to prevent PinMAME splash screen
-REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v cabinet_mode /t REG_DWORD /d 1 /f
-
-REM Skip Pinball Test to Speed Up Table Load
-REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v cheat /t REG_DWORD /d 1 /f
-
-REM Store the current audio settings
+REM Store the current settings
 REM QUERY returns multiple lines, we only care about the actual value, so extract and store in variable
 FOR /F "skip=2 tokens=2,*" %%A IN ('REG QUERY "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v "sound_mode"') DO SET "sound_mode=%%B"
 FOR /F "skip=2 tokens=2,*" %%A IN ('REG QUERY "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v "resampling_quality"') DO SET "resampling_quality=%%B"
- 
+
 IF "[ALTMODE]"=="origsound" (
     REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d 0 /f
     REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d 0 /f
@@ -79,6 +73,18 @@ IF %use_backglass%==1 (
         ECHO DEL "[DIRGAME]\[GAMENAME].directb2s">> "[STARTDIR]restore_settings.bat"
     )
 )
+
+REM Force cabinet mode to prevent PinMAME splash screen
+FOR /F "skip=2 tokens=2,*" %%A IN ('REG QUERY "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v "cabinet_mode"') DO SET "cabinet_mode=%%B"
+REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v cabinet_mode /t REG_DWORD /d 1 /f
+REM -----------  CLEANUP ON CLOSE -----------
+ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v cabinet_mode /t REG_DWORD /d %cabinet_mode% /f>> "[STARTDIR]restore_settings.bat"
+
+REM Skip Pinball Test to Speed Up Table Load
+FOR /F "skip=2 tokens=2,*" %%A IN ('REG QUERY "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v "cheat"') DO SET "cheat=%%B"
+REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v cheat /t REG_DWORD /d 1 /f
+REM -----------  CLEANUP ON CLOSE -----------
+ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v cheat /t REG_DWORD /d %cheat% /f>> "[STARTDIR]restore_settings.bat"
 
 IF "[RECMODE]"=="1" (
     START /min "" vpinballx.exe "[DIREMU]" -DisableTrueFullscreen -minimized -play "[GAMEFULLNAME]"
