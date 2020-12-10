@@ -10,7 +10,7 @@ The launch script is completely non-destructive and as it executes it creates a 
 
 This launch script implements the following ALTMODES:
 
-* **backglass** - disable pup-pack and use backglass -- backglass should be in the table directory with the name: **[TABLENAME].directb2s.BG**
+* **backglass** - disable pup-pack and use backglass -- these optional backglass files should be in the table directory with the name: **[TABLENAME].directb2s.BG**
 * **origsound** - plays the table in completely "original form": rom audio, disable pup-pack, and use backglass
 * **altsound** - play table in original form with altsound enabled
 * **pinsound** - play table in original form with pinsound enabled
