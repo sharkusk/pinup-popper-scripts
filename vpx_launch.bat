@@ -23,47 +23,71 @@ IF "[ALTMODE]"=="backglass" (
     SET use_backglass=1
 )
 
-REM Store the current settings
-REM QUERY returns multiple lines, we only care about the actual value, so extract and store in variable
-FOR /F "skip=2 tokens=2,*" %%A IN ('REG QUERY "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v "sound_mode"') DO SET "sound_mode=%%B"
-FOR /F "skip=2 tokens=2,*" %%A IN ('REG QUERY "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v "resampling_quality"') DO SET "resampling_quality=%%B"
-
-IF "[ALTMODE]"=="origsound" (
-    REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d 0 /f
-    REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d 0 /f
-
-    REM -----------  CLEANUP ON CLOSE -----------
-    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d %sound_mode% /f>> "[STARTDIR]restore_settings.bat"
-    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d %resampling_quality% /f>> "[STARTDIR]restore_settings.bat"
-
-    SET use_backglass=1
+REM Check if we are dealing with a PinMAME ROM
+REG QUERY "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v "sound_mode"
+IF %errorlevel%==0 (
+    SET PinMAME=1
+) else (
+    SET PinMAME=0
 )
 
-IF "[ALTMODE]"=="altsound" (
-    REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d 1 /f
-    REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d 1 /f
+IF %PinMAME%==1 (
+    REM Store the current settings
+    REM QUERY returns multiple lines, we only care about the actual value, so extract and store in variable
+    FOR /F "skip=2 tokens=2,*" %%A IN ('REG QUERY "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v "sound_mode"') DO SET "sound_mode=%%B"
+    FOR /F "skip=2 tokens=2,*" %%A IN ('REG QUERY "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v "resampling_quality"') DO SET "resampling_quality=%%B"
 
+    IF "[ALTMODE]"=="origsound" (
+        REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d 0 /f
+        REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d 0 /f
+
+        REM -----------  CLEANUP ON CLOSE -----------
+        ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d %sound_mode% /f>> "[STARTDIR]restore_settings.bat"
+        ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d %resampling_quality% /f>> "[STARTDIR]restore_settings.bat"
+
+        SET use_backglass=1
+    )
+
+    IF "[ALTMODE]"=="altsound" (
+        REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d 1 /f
+        REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d 1 /f
+
+        REM -----------  CLEANUP ON CLOSE -----------
+        ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d %sound_mode% /f>> "[STARTDIR]restore_settings.bat"
+        ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d %resampling_quality% /f>> "[STARTDIR]restore_settings.bat"
+
+        SET use_backglass=1
+    )
+
+    IF "[ALTMODE]"=="pinsound" (
+        REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d 2 /f
+        REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d 1 /f
+
+        REM -----------  CLEANUP ON CLOSE -----------
+        ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d %sound_mode% /f>> "[STARTDIR]restore_settings.bat"
+        ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d %resampling_quality% /f>> "[STARTDIR]restore_settings.bat"
+
+        SET use_backglass=1
+    )
+
+    REM Force cabinet mode to prevent PinMAME splash screen
+    FOR /F "skip=2 tokens=2,*" %%A IN ('REG QUERY "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v "cabinet_mode"') DO SET "cabinet_mode=%%B"
+    REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v cabinet_mode /t REG_DWORD /d 1 /f
     REM -----------  CLEANUP ON CLOSE -----------
-    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d %sound_mode% /f>> "[STARTDIR]restore_settings.bat"
-    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d %resampling_quality% /f>> "[STARTDIR]restore_settings.bat"
+    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v cabinet_mode /t REG_DWORD /d %cabinet_mode% /f>> "[STARTDIR]restore_settings.bat"
 
-    SET use_backglass=1
-)
-
-IF "[ALTMODE]"=="pinsound" (
-    REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d 2 /f
-    REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d 1 /f
-
+    REM Skip Pinball Test to Speed Up Table Load
+    FOR /F "skip=2 tokens=2,*" %%A IN ('REG QUERY "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v "cheat"') DO SET "cheat=%%B"
+    REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v cheat /t REG_DWORD /d 1 /f
     REM -----------  CLEANUP ON CLOSE -----------
-    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v sound_mode /t REG_DWORD /d %sound_mode% /f>> "[STARTDIR]restore_settings.bat"
-    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v resampling_quality /t REG_DWORD /d %resampling_quality% /f>> "[STARTDIR]restore_settings.bat"
-
-    SET use_backglass=1
+    ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v cheat /t REG_DWORD /d %cheat% /f>> "[STARTDIR]restore_settings.bat"
 )
 
 IF %use_backglass%==1 (
-    REM Tell PinUp Player to not use Pup pack this time around
-    ECHO 1>> "[STARTDIR]PUPVideos\[?ROM?]\PUPHideNext.txt"
+    IF EXIST "[STARTDIR]PUPVideos\[?ROM?]\" (
+        REM Tell PinUp Player to not use Pup pack this time around
+        ECHO 1>> "[STARTDIR]PUPVideos\[?ROM?]\PUPHideNext.txt"
+    )
 
     REM If we have a backglass available, copy it and delete on exit to restore law and order
     IF EXIST "[DIRGAME]\[GAMENAME].directb2s.BG" (
@@ -73,18 +97,6 @@ IF %use_backglass%==1 (
         ECHO DEL "[DIRGAME]\[GAMENAME].directb2s">> "[STARTDIR]restore_settings.bat"
     )
 )
-
-REM Force cabinet mode to prevent PinMAME splash screen
-FOR /F "skip=2 tokens=2,*" %%A IN ('REG QUERY "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v "cabinet_mode"') DO SET "cabinet_mode=%%B"
-REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v cabinet_mode /t REG_DWORD /d 1 /f
-REM -----------  CLEANUP ON CLOSE -----------
-ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v cabinet_mode /t REG_DWORD /d %cabinet_mode% /f>> "[STARTDIR]restore_settings.bat"
-
-REM Skip Pinball Test to Speed Up Table Load
-FOR /F "skip=2 tokens=2,*" %%A IN ('REG QUERY "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v "cheat"') DO SET "cheat=%%B"
-REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v cheat /t REG_DWORD /d 1 /f
-REM -----------  CLEANUP ON CLOSE -----------
-ECHO REG ADD "HKCU\Software\Freeware\Visual PinMame\[?ROM?]" /v cheat /t REG_DWORD /d %cheat% /f>> "[STARTDIR]restore_settings.bat"
 
 IF "[RECMODE]"=="1" (
     START /min "" vpinballx.exe "[DIREMU]" -DisableTrueFullscreen -minimized -play "[GAMEFULLNAME]"
