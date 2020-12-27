@@ -1,21 +1,21 @@
-REM @echo off
+@echo off
 SETLOCAL EnableDelayedExpansion
 
 REM START OF VARIABLES DECLARATION
 
     REM Set the following variables based on your setup
     REM Path to PINemHI
-    SET "PINemHiPath=c:\Utils\PINemHi"
+    SET "PINemHiPath=c:\PinUPSystem\Utils\PINemHi"
 
     REM Path to ImageMagick
-    SET "ImageMagick=C:\Utils\ImageMagick"
+    SET "ImageMagick=C:\PinUPSystem\Utils\ImageMagick"
 
     REM Path to TXT files with HiScores
-    SET "PINemHiHS=c:\Utils\PINemHi\Text"
+    SET "PINemHiHS=c:\PinUPSystem\Utils\PINemHi\Text"
     If NOT EXIST "%PINemHiHS%" (mkdir "%PINemHiHS%")
 
     REM Path for temporary PNGs and background image
-    SET "PINemHiPNG=c:\Utils\PINemHi\PNGs"
+    SET "PINemHiPNG=c:\PinUPSystem\Utils\PINemHi\PNGs"
 
     REM Filename of background image to be used
     SET "Background=highscore_background.png"
@@ -33,13 +33,15 @@ REM START OF VARIABLES DECLARATION
     SET "Zexepath=C:\Program Files\7-Zip"
 
     REM Folder where you want the VP high score PNGs with high scores placed (GameInfo, Topper, DMD, etc.)
-    SET "POPVPMedia=c:\PinupSystem\POPMedia\Visual Pinball X\Other2"
+    SET "POPVPMedia=c:\PinupSystem\POPMedia\Visual Pinball X\DMD"
 
     REM Folder where you want the FP high score PNGs with high scores placed (GameInfo, Topper, DMD, etc.)
-    SET "POPFPMedia=c:\PinupSystem\POPMedia\Future Pinball\Other2"
+    SET "POPFPMedia=c:\PinupSystem\POPMedia\Future Pinball\DMD"
 
     REM This suffaaaaaaaaix will be added to the second parameter passed (tablename) when saving high score PNGs
     SET "Suffix="
+
+    SET "Font=c:\PinUPSystem\Utils\PINemHi\PNGs\ConsolateElf-X33XP.ttf"
 
 REM END OF VARIABLES DECLARATION
 
@@ -76,7 +78,7 @@ REM Start of ULTRADMD processing
 SET TEMPTXT=%~1
 SET OUTPUT=%POPVPMedia%
 REM extract hiscore files from iStor
-@echo High Scores>"%PINemHiHS%\%TEMPTXT%.txt"
+@echo HIGH SCORES>"%PINemHiHS%\%TEMPTXT%.txt"
 %Zexepath%\7z.exe x -o"%PINemHiHS%" "%UserPath%\VPReg.stg" %1
 REM Then parse and build TXT file similar to POSTIT
 FOR /L %%G IN (1,1,4) DO (
@@ -105,7 +107,7 @@ for /f "usebackq delims=" %%I in ("%UserPath%\%TEMPTXT%") do (
     set /a idx += 1
     )
 REM We generate a text file with the high scores table
-@echo High scores:>"%PINemHiHS%\%TEMPTXT%.txt"
+@echo HIGH SCORES:>"%PINemHiHS%\%TEMPTXT%.txt"
 set /a "HSN=idx-5"
 set /a "HS=idx-10"
 :While
@@ -140,8 +142,10 @@ REM Call ImageMagick convert to create a PNG from the hiscore TXT file (note col
 REM Choose to size the resulting image based on the background file you use
 REM if you'd like a monospaced output, add -font Courier
 IF EXIST "%PINemHiHS%\%TEMPTXT%.txt" (
-    rem type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font Digitalt -background none -fill grey -pointsize 60 pango:@- -resize 1536x864 "%PINemHiPNG%\%TEMPTXT%.png"
-    type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font Digitalt -background black -fill grey -pointsize 60 pango:@- -resize 1536x864 "%PINemHiPNG%\%TEMPTXT%.png"
+    REM We are going to fill in the DMD area with the high scores so use the DMD size
+    REM Fill with black background as that is the transparent color used by PinUP Popper
+    type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -gravity center -fill grey -size 1776x445 caption:@- "%PINemHiPNG%\%TEMPTXT%.png"
+    REM type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -fill grey pango:@- -resize 1776x445 "%PINemHiPNG%\%TEMPTXT%.png"
     )
 
 REM Call ImageMagick composite to merge previous PNG with the background image, and center it
