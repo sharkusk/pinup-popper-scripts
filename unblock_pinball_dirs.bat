@@ -1,0 +1,1 @@
+powershell.exe -ExecutionPolicy Unrestricted -Command ". '.\unblock_pinball_dirs.ps1'"

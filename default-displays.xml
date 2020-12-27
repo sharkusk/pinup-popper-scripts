@@ -1,0 +1,68 @@
+<monitors app-version="1.7.0.32" version="3" topology="Extend">
+    <!--The version identifies the format of the configuration file.-->
+    <!--topology=-->
+    <!--Internal, Clone, Extend, External-->
+    <!--The monitor ID attribute must be specified.-->
+    <monitor active="true" virtual="false" id="176387" id-FFFF="true" adapterHigh="0" adapterLow="40098">
+        <name>V405-H9</name>
+        <!--source: the origin of the video signal-->
+        <source id="2">
+            <name>\\.\DISPLAY3</name>
+            <path>\\?\PCI#VEN_10DE&amp;DEV_2484&amp;SUBSYS_404C1458&amp;REV_A1#4&amp;142c1193&amp;0&amp;0019#{5b45201d-f2f2-4f3b-85bb-30ff1f953599}</path>
+        </source>
+        <size width="3840" height="2160"/>
+        <position left="0" top="0"/>
+        <!--8bpp, 16bpp, 24bpp, 32bpp, Non-GDI-->
+        <color value="32bpp"/>
+        <!--Identity, 90-degreesCW, 180-degreesCW, 270-degreesCW-->
+        <rotation value="Identity"/>
+        <!--Identity, Centered, Stretched, Aspect Ratio Centered Max, Custom, Preferred-->
+        <scaling value="Aspect Ratio Centered Max"/>
+        <!--A value of 0/0 represents the optimal refresh rate. Scan-line-order must be Unspecified.-->
+        <refresh numerator="60000" denominator="1000"/>
+        <!--Unspecified, Progressive, Interlaced (upper field first), Interlaced (lower field first)-->
+        <scanlineorder value="Progressive"/>
+    </monitor>
+    <!--The monitor ID attribute must be specified.-->
+    <monitor active="true" virtual="false" id="176384" id-FFFF="true" adapterHigh="0" adapterLow="40098">
+        <name>K3A8F HDMI</name>
+        <!--source: the origin of the video signal-->
+        <source id="1">
+            <name>\\.\DISPLAY2</name>
+            <path>\\?\PCI#VEN_10DE&amp;DEV_2484&amp;SUBSYS_404C1458&amp;REV_A1#4&amp;142c1193&amp;0&amp;0019#{5b45201d-f2f2-4f3b-85bb-30ff1f953599}</path>
+        </source>
+        <size width="1920" height="1080"/>
+        <position left="6400" top="0"/>
+        <!--8bpp, 16bpp, 24bpp, 32bpp, Non-GDI-->
+        <color value="32bpp"/>
+        <!--Identity, 90-degreesCW, 180-degreesCW, 270-degreesCW-->
+        <rotation value="Identity"/>
+        <!--Identity, Centered, Stretched, Aspect Ratio Centered Max, Custom, Preferred-->
+        <scaling value="Aspect Ratio Centered Max"/>
+        <!--A value of 0/0 represents the optimal refresh rate. Scan-line-order must be Unspecified.-->
+        <refresh numerator="60000" denominator="1000"/>
+        <!--Unspecified, Progressive, Interlaced (upper field first), Interlaced (lower field first)-->
+        <scanlineorder value="Progressive"/>
+    </monitor>
+    <!--The monitor ID attribute must be specified.-->
+    <monitor active="true" virtual="false" id="176385" id-FFFF="true" adapterHigh="0" adapterLow="40098">
+        <name>LEN C32q-20</name>
+        <!--source: the origin of the video signal-->
+        <source id="0">
+            <name>\\.\DISPLAY1</name>
+            <path>\\?\PCI#VEN_10DE&amp;DEV_2484&amp;SUBSYS_404C1458&amp;REV_A1#4&amp;142c1193&amp;0&amp;0019#{5b45201d-f2f2-4f3b-85bb-30ff1f953599}</path>
+        </source>
+        <size width="2560" height="1440"/>
+        <position left="3840" top="0"/>
+        <!--8bpp, 16bpp, 24bpp, 32bpp, Non-GDI-->
+        <color value="32bpp"/>
+        <!--Identity, 90-degreesCW, 180-degreesCW, 270-degreesCW-->
+        <rotation value="Identity"/>
+        <!--Identity, Centered, Stretched, Aspect Ratio Centered Max, Custom, Preferred-->
+        <scaling value="Aspect Ratio Centered Max"/>
+        <!--A value of 0/0 represents the optimal refresh rate. Scan-line-order must be Unspecified.-->
+        <refresh numerator="59951" denominator="1000"/>
+        <!--Unspecified, Progressive, Interlaced (upper field first), Interlaced (lower field first)-->
+        <scanlineorder value="Progressive"/>
+    </monitor>
+</monitors>
