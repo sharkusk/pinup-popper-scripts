@@ -2,9 +2,64 @@ import argparse
 from PIL import Image, ImageDraw, ImageFont
 import os
 import math
+import numpy as np
+from moviepy.editor import *
+from moviepy.video.tools.drawing import color_gradient
+
+def create_video_from_text(text, args):
+    moviesize = tuple(map(int, args.size.split('x')))
+    w, h = moviesize
+
+    # Add blanks
+    # text = 5*"\n" + text + 5*"\n"
+
+    # CREATE THE TEXT IMAGE
+    clip_txt = TextClip(text.strip(), color=args.text_color, align='Center',
+            fontsize=int(args.font_size), font=args.font, method='label')
+    
+    # SCROLL THE TEXT IMAGE BY CROPPING A MOVING AREA
+
+    pause_time = 2
+    if args.text_speed == "":
+        duration = int(args.duration)
+        txt_speed = (clip_txt.size[1] - h) / (duration - (2 * pause_time))
+    else:
+        txt_speed = int(args.text_speed)
+        duration = 2 * pause_time + ((clip_txt.size[1] - h) / txt_speed)
+
+    def fl(gf, t):
+        if t < pause_time:
+            # Pause at start
+            t = 0
+        elif t > duration - pause_time:
+            # Pause at end
+            t = duration - (2 * pause_time)
+        else:
+            t = t - pause_time
+
+        return gf(t)[int(txt_speed*t):int(txt_speed*t)+h,:]
+
+    moving_txt = clip_txt.fl(fl, apply_to=['mask'])
+
+    if False:
+        # ADD A VANISHING EFFECT ON THE TEXT WITH A GRADIENT MASK
+        grad = color_gradient(moving_txt.size,p1=(0,2*h/3),
+                        p2=(0,h/4),col1=0.0,col2=1.0)
+        gradmask = ImageClip(grad,ismask=True)
+        fl = lambda pic : np.minimum(pic,gradmask.img)
+        moving_txt.mask = moving_txt.mask.fl_image(fl)
+
+    final = CompositeVideoClip([
+            moving_txt.set_pos(('center','bottom'))],
+            size = moviesize)
+
+    filename = os.path.join(args.popmedia, args.gamename + args.suffix + ".mp4")
+
+    # WRITE TO A FILE
+    final.set_duration(duration).write_videofile(filename, fps=int(args.fps), codec="mpeg4")
 
 def create_image_from_text(text, args):
-    lines = text.splitlines()
+    lines = text.strip().splitlines()
     nlines = len(lines)
     ncols = math.ceil(nlines / int(args.max_lines))
     img_size = tuple(map(int, args.size.split('x')))
@@ -43,8 +98,8 @@ def create_image_from_text(text, args):
         draw.rectangle([x1, y1, x2, y2])
         start_line = end_line
 
-    img.show()
-    # img.save(os.path.join(args.popmedia, args.gamename + args.suffix + ".png"))
+    filename = os.path.join(args.popmedia, args.gamename + args.suffix + ".png")
+    img.save(filename)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -63,10 +118,14 @@ if __name__ == "__main__":
     parser.add_argument("--userpath", help="Path to Visual Pinballs's User directory", default="C:/Visual Pinball/User")
     parser.add_argument("--popmedia", help="Path to directory to store image", default="c:/PinupSystem/POPMedia/Visual Pinball X/DMD")
     parser.add_argument("--suffix", help="Added to the table's imagename to avoid conflicts with other meida files", default="")
+    parser.add_argument("--duration", help="Length of time for video clip", default="10")
+    parser.add_argument("--text_speed", help="Speed of text scrolling (overrides duration) -- 120 is reasonable", default="")
+    parser.add_argument("--fps", help="FPS of generated video file", default="12")
     parser.add_argument("--text_file", help="Specify text file to use instead of processing table", default="")
     args = parser.parse_args()
 
     if args.text_file != "":
         with open(args.text_file, 'r') as f:
             text = f.read()
-            create_image_from_text(text, args)
+            # create_image_from_text(text, args)
+            create_video_from_text(text, args)
