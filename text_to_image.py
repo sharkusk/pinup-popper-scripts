@@ -107,7 +107,7 @@ if __name__ == "__main__":
     parser.add_argument("--size", help="Size of image to generate in format of WxH (e.g. '1776x445')", default="1776x445")
     parser.add_argument("--background_color", help="Background color", default="black")
     parser.add_argument("--text_color", help="Color of text", default="grey")
-    parser.add_argument("--font_size", help="Name or path to font (default will maximize image)", default="")
+    parser.add_argument("--font_size", help="Font size (default will maximize)", default="")
     parser.add_argument("--max_lines", help="Maximum number of lines", default="8")
     args = parser.parse_args()
 

@@ -1,7 +1,6 @@
 import argparse
 import os
 from moviepy.editor import *
-from moviepy.video.tools.drawing import color_gradient
 
 def create_video_from_text(text, args):
     moviesize = tuple(map(int, args.size.split('x')))
@@ -9,10 +8,7 @@ def create_video_from_text(text, args):
 
     # Add blanks
     # text = 5*"\n" + text + 5*"\n"
-    if args.font_size == "":
-        font_size = 100
-    else:
-        font_size = int(args.font_size)
+    font_size = int(args.font_size)
 
     # CREATE THE TEXT IMAGE
     clip_txt = TextClip(text.strip(), bg_color=args.background_color, color=args.text_color,
@@ -64,7 +60,7 @@ if __name__ == "__main__":
     parser.add_argument("--size", help="Size of image or video to generate in format of WxH (e.g. '1776x445')", default="1776x445")
     parser.add_argument("--background_color", help="Background color", default="black")
     parser.add_argument("--text_color", help="Color of text", default="grey")
-    parser.add_argument("--font_size", help="Name or path to font (default will maximize image)", default="")
+    parser.add_argument("--font_size", help="Size of font", default="100")
     parser.add_argument("--duration", help="Length of time for video clip", default="10")
     parser.add_argument("--text_speed", help="Speed of text scrolling (overrides duration) -- 120 is reasonable", default="")
     parser.add_argument("--fps", help="FPS of generated video file", default="12")
