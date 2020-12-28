@@ -11,10 +11,14 @@ def create_video_from_text(text, args):
 
     # Add blanks
     # text = 5*"\n" + text + 5*"\n"
+    if args.font_size == "":
+        font_size = 100
+    else:
+        font_size = int(args.font_size)
 
     # CREATE THE TEXT IMAGE
     clip_txt = TextClip(text.strip(), bg_color=args.background_color, color=args.text_color,
-        align='Center', fontsize=int(args.font_size), font=args.font, method='label')
+        align='Center', fontsize=font_size, font=args.font, method='label')
     
     # SCROLL THE TEXT IMAGE BY CROPPING A MOVING AREA
 
@@ -45,10 +49,8 @@ def create_video_from_text(text, args):
             moving_txt.set_pos(('center','bottom'))],
             size = moviesize)
 
-    filename = os.path.join(args.popmedia, args.gamename + args.suffix + ".mp4")
-
     # WRITE TO A FILE
-    final.set_duration(duration).write_videofile(filename, fps=int(args.fps)) #, preset="ultrafast")
+    final.set_duration(duration).write_videofile(args.save_name, fps=int(args.fps)) #, preset="ultrafast")
 
 def create_image_from_text(text, args):
     lines = text.strip().splitlines()
@@ -56,12 +58,59 @@ def create_image_from_text(text, args):
     ncols = math.ceil(nlines / int(args.max_lines))
     img_size = tuple(map(int, args.size.split('x')))
     img = Image.new('RGB', img_size, color=args.background_color)
-    font = ImageFont.truetype(args.font, int(args.font_size))
     draw = ImageDraw.Draw(img)
 
     lines_per_col = math.ceil(len(lines)/ncols)
     col_size = int(img_size[0] / ncols)
-    
+
+    # Optimize font size
+    if args.font_size == "":
+        font_size = int(img_size[1] / lines_per_col)
+
+        font = ImageFont.truetype(args.font, font_size)
+
+        biggest_line = 0
+        biggest_line_size = (0, 0)
+
+        # Find the biggest line
+        for i, line in enumerate(lines):
+            w, h = draw.textsize(line, font=font)
+            if w > biggest_line_size[0]:
+                biggest_line = i
+                biggest_line_size = w, h
+        
+        # Optimize font size using binary search
+        # We want to be as big as possible without going over our h or w limits
+        under_fit = 10
+        over_fit = 100
+        prev_size = -1 
+        margin = 0.95
+        while True:
+            print(f"under {under_fit}, over {over_fit}, size {font_size}")
+
+            font_size = int((over_fit + under_fit)/2)
+            if prev_size == font_size:
+                # Font size is not changing so use the last under_fit as our optimal
+                font_size = under_fit
+                break
+
+            font = ImageFont.truetype(args.font, font_size)
+            w, h = draw.textsize(lines[biggest_line], font=font)
+            if w > margin * col_size:
+                print(f"w: {w} > {margin * col_size}")
+                over_fit = font_size
+            elif h > margin * (img_size[1]/lines_per_col):
+                print(f"h: {h} > {margin * (img_size[1]/lines_per_col)}")
+                over_fit = font_size
+            else:
+                under_fit = font_size
+            prev_size = font_size
+    else:
+        font_size = int(args.font_size)
+
+    print(f"Using font size of {font_size}")
+    font = ImageFont.truetype(args.font, font_size)
+
     start_line = 0
     for i in range(ncols):
         # Do not start a column with a blank line
@@ -87,32 +136,32 @@ def create_image_from_text(text, args):
         draw.text((x, y), t, align='center', font=font, color=args.text_color)
 
         # Draw the bounding box to show that this works
-        draw.rectangle([x1, y1, x2, y2])
+        # draw.rectangle([x1, y1, x2, y2])
+
         start_line = end_line
 
-    filename = os.path.join(args.popmedia, args.gamename + args.suffix + ".png")
-    img.save(filename)
+    img.save(args.save_name)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("text_file", help="Text file to convert to image or video")
-    parser.add_argument("gamename", help="Popper gamename used to generate image filename")
-    parser.add_argument("--size", help="Size of image or video to generate (e.g. 1776x445)", default="1776x445")
-    parser.add_argument("--background_color", help="Background color of image", default="black")
+    parser.add_argument("save_name", help="File path of output graphic (.png or .jpg) or video file (.mp4 or .avi)")
+    parser.add_argument("font", help="Full path to TrueType or OpenType font file")
+    parser.add_argument("--size", help="Size of image or video to generate in format of WxH (e.g. '1776x445')", default="1776x445")
+    parser.add_argument("--background_color", help="Background color", default="black")
     parser.add_argument("--text_color", help="Color of text", default="grey")
-    parser.add_argument("--max_lines", help="Maximum number of lines per column", default="8")
-    parser.add_argument("--font", help="Name or path to font", default="Impact")
-    parser.add_argument("--font_size", help="Name or path to font", default="40")
-    parser.add_argument("--popmedia", help="Path to directory to store image", default="c:/PinupSystem/POPMedia/Visual Pinball X/DMD")
-    parser.add_argument("--suffix", help="Added to the table's imagename to avoid conflicts with other meida files", default="")
-    parser.add_argument("--duration", help="Length of time for video clip", default="10")
-    parser.add_argument("--text_speed", help="Speed of text scrolling (overrides duration) -- 120 is reasonable", default="")
-    parser.add_argument("--fps", help="FPS of generated video file", default="12")
-    parser.add_argument("-v", "--verbose", help="increase output verbosity", action="store_true")
+    parser.add_argument("--font_size", help="Name or path to font (default will maximize image)", default="")
+    parser.add_argument("--max_lines", help="(image only) Maximum number of lines", default="8")
+    parser.add_argument("--duration", help="(video only) Length of time for video clip", default="10")
+    parser.add_argument("--text_speed", help="(video only) Speed of text scrolling (overrides duration) -- 120 is reasonable", default="")
+    parser.add_argument("--fps", help="(video only) FPS of generated video file", default="12")
     args = parser.parse_args()
 
     if args.text_file != "":
         with open(args.text_file, 'r') as f:
             text = f.read()
-            # create_image_from_text(text, args)
-            create_video_from_text(text, args)
+            file_type = os.path.splitext(args.save_name)[1] 
+            if file_type in ['.png', '.jpg']:
+                create_image_from_text(text, args)
+            elif file_type in ['.mp4', '.avi']:
+                create_video_from_text(text, args)
