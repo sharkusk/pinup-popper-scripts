@@ -38,7 +38,7 @@ REM START OF VARIABLES DECLARATION
     REM Folder where you want the FP high score PNGs with high scores placed (GameInfo, Topper, DMD, etc.)
     SET "POPFPMedia=c:\PinupSystem\POPMedia\Future Pinball\DMD"
 
-    REM This suffaaaaaaaaix will be added to the second parameter passed (tablename) when saving high score PNGs
+    REM This suffix will be added to the second parameter passed (tablename) when saving high score PNGs
     SET "Suffix="
 
     SET "Font=c:\PinUPSystem\Utils\PINemHi\PNGs\ConsolateElf-X33XP.ttf"
