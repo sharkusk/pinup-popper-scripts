@@ -1,4 +1,4 @@
-@echo off
+REM @echo off
 SETLOCAL EnableDelayedExpansion
 
 REM START OF VARIABLES DECLARATION
@@ -30,7 +30,7 @@ REM START OF VARIABLES DECLARATION
     SET "UserPath=c:\Visual Pinball\User"
 
     REM Path to 7z
-    SET "Zexepath=C:\Program Files\7-Zip"
+    SET Zexepath="C:\Program Files\7-Zip"
 
     REM Folder where you want the VP high score PNGs with high scores placed (GameInfo, Topper, DMD, etc.)
     SET "POPVPMedia=c:\PinupSystem\POPMedia\Visual Pinball X\DMD"
@@ -52,9 +52,9 @@ REM "%PINemHiPath%\pinemhi.exe" -lr>"%PINemHiPath%\supported.txt"
 
 REM We will select the right parsing routine
 SET ISTEXT=%3
-if "%ISTEXT%" == "BAM" GOTO FUTURE
+if %ISTEXT% == "BAM" GOTO FUTURE
 SET ISTEXT=%3
-if "%ISTEXT%" == "UltraDMD" GOTO ULTRADMD
+if %ISTEXT% == "UltraDMD" GOTO ULTRADMD
 SET ISTEXT=%1
 SET ISTEXT=%ISTEXT:~-4%
 if "%ISTEXT%" == ".txt" GOTO POSTIT
