@@ -1,0 +1,8 @@
+GRAND CHAMPION
+KOZ         9,250,000
+
+SULTAN'S COURT
+1) POP         9,000,000
+2) MAX         8,750,000
+3) SKA         8,500,000
+4) ZAB         8,000,000
