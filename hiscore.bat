@@ -78,7 +78,7 @@ REM Start of ULTRADMD processing
 SET TEMPTXT=%~1
 SET OUTPUT=%POPVPMedia%
 REM extract hiscore files from iStor
-@echo HIGH SCORES>"%PINemHiHS%\%TEMPTXT%.txt"
+@echo HIGHEST SCORES>"%PINemHiHS%\%TEMPTXT%.txt"
 %Zexepath%\7z.exe x -o"%PINemHiHS%" "%UserPath%\VPReg.stg" %1
 REM Then parse and build TXT file similar to POSTIT
 FOR /L %%G IN (1,1,4) DO (
@@ -90,6 +90,7 @@ REM we now clean temp files
 rmdir "%PINemHiHS%\%1" /s/q
 REM delete TXT files with size 0 as they are empty
 for /f %%I in ("%PINemHiHS%\%TEMPTXT%.txt") do if %%~zI==0 del "%PINemHiHS%\%TEMPTXT%.txt"
+CALL python process_text.py "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiHS%\%TEMPTXT%.txt" UltraDMD
 GOTO PNG
 
 :POSTIT
@@ -107,7 +108,7 @@ for /f "usebackq delims=" %%I in ("%UserPath%\%TEMPTXT%") do (
     set /a idx += 1
     )
 REM We generate a text file with the high scores table
-@echo HIGH SCORES:>"%PINemHiHS%\%TEMPTXT%.txt"
+@echo HIGHEST SCORES:>"%PINemHiHS%\%TEMPTXT%.txt"
 set /a "HSN=idx-5"
 set /a "HS=idx-10"
 :While
@@ -117,6 +118,7 @@ set /a "HS=idx-10"
         set /a HS += 1
         GOTO While
 :EndWhile
+CALL python process_text.py "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiHS%\%TEMPTXT%.txt" PostIt
 GOTO PNG
 
 :NVRAM
@@ -144,8 +146,10 @@ REM if you'd like a monospaced output, add -font Courier
 IF EXIST "%PINemHiHS%\%TEMPTXT%.txt" (
     REM We are going to fill in the DMD area with the high scores so use the DMD size
     REM Fill with black background as that is the transparent color used by PinUP Popper
-    type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -gravity center -fill grey -size 1776x445 caption:@- "%PINemHiPNG%\%TEMPTXT%.png"
+    REM type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -gravity center -fill grey -size 1776x445 caption:@- "%PINemHiPNG%\%TEMPTXT%.png"
     REM type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -fill grey pango:@- -resize 1776x445 "%PINemHiPNG%\%TEMPTXT%.png"
+    CALL python text_to_image.py "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiPNG%\%TEMPTXT%.png" %Font%
+    CALL python text_to_video.py --text_color orange --text_speed 120 "%PINemHiHS%\%TEMPTXT%.txt" "%OUTPUT%\%~2%Suffix%.mp4" ./HighSpeed.ttf
     )
 
 REM Call ImageMagick composite to merge previous PNG with the background image, and center it
