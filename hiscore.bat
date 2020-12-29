@@ -45,13 +45,13 @@ REM START OF VARIABLES DECLARATION
     REM Moviepy requires escape style paths
     SET "Video_Font=c:\\PinUPSystem\\Utils\\Fonts\\HIGHSPEED.TTF"
 
-    SET "HiScoreDir=%CD%"
+    SET "HiScoreDir=c:\PinUPSystem\Scripts"
 REM END OF VARIABLES DECLARATION
 
 REM Need to change to the PINemHi folder in order for the exe to read its INI
 cd "%PINemHiPath%"
 REM Uncomment the next line to regenerate PINemHi supported roms DB
-"%PINemHiPath%\pinemhi.exe" -lr>"%PINemHiPath%\supported.txt"
+REM "%PINemHiPath%\pinemhi.exe" -lr>"%PINemHiPath%\supported.txt"
 
 REM We will select the right parsing routine
 SET ISTEXT=%3
@@ -143,7 +143,6 @@ for /f %%I in ("%PINemHiHS%\%TEMPTXT%.txt") do if %%~zI==0 del "%PINemHiHS%\%TEM
 GOTO PNG
 
 :PNG
-cd %HiScoreDir%
 REM Call ImageMagick convert to create a PNG from the hiscore TXT file (note color, font and other options available)
 REM Choose to size the resulting image based on the background file you use
 REM if you'd like a monospaced output, add -font Courier
@@ -152,8 +151,8 @@ IF EXIST "%PINemHiHS%\%TEMPTXT%.txt" (
     REM Fill with black background as that is the transparent color used by PinUP Popper
     REM type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -gravity center -fill grey -size 1776x445 caption:@- "%PINemHiPNG%\%TEMPTXT%.png"
     REM type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -fill grey pango:@- -resize 1776x445 "%PINemHiPNG%\%TEMPTXT%.png"
-    CALL python "%HiScoreDir%\text_to_image.py" "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiPNG%\%TEMPTXT%.png" "%Font%"
-    CALL python "%HiScoreDir%\text_to_video.py" --text_color orange --text_speed 120 "%PINemHiHS%\%TEMPTXT%.txt" "%OUTPUT%\%~2%Suffix%.mp4" "%Video_Font%"
+    REM CALL python "%HiScoreDir%\text_to_image.py" "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiPNG%\%TEMPTXT%.png" "%Font%" --max_lines 8 
+    CALL python "%HiScoreDir%\text_to_video.py" --text_color #ff5820 --text_speed 120 "%PINemHiHS%\%TEMPTXT%.txt" "%OUTPUT%\%~2%Suffix%.mp4" "%Video_Font%"
     )
 
 REM Call ImageMagick composite to merge previous PNG with the background image, and center it
