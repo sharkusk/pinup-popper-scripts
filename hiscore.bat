@@ -2,7 +2,6 @@ REM @echo off
 SETLOCAL EnableDelayedExpansion
 
 REM START OF VARIABLES DECLARATION
-
     REM Set the following variables based on your setup
     REM Path to PINemHI
     SET "PINemHiPath=c:\PinUPSystem\Utils\PINemHi"
@@ -41,15 +40,18 @@ REM START OF VARIABLES DECLARATION
     REM This suffix will be added to the second parameter passed (tablename) when saving high score PNGs
     SET "Suffix="
 
-    SET "Font=c:\PinUPSystem\Utils\PINemHi\PNGs\ConsolateElf-X33XP.ttf"
-    SET "Video_Font=HighSpeed.ttf"
+    SET "Font=c:\PinUPSystem\Utils\Fonts\RubikMonoOneRegular-6pqq.ttf"
 
+    REM Moviepy requires escape style paths
+    SET "Video_Font=c:\\PinUPSystem\\Utils\\Fonts\\HIGHSPEED.TTF"
+
+    SET "HiScoreDir=%CD%"
 REM END OF VARIABLES DECLARATION
 
 REM Need to change to the PINemHi folder in order for the exe to read its INI
 cd "%PINemHiPath%"
 REM Uncomment the next line to regenerate PINemHi supported roms DB
-REM "%PINemHiPath%\pinemhi.exe" -lr>"%PINemHiPath%\supported.txt"
+"%PINemHiPath%\pinemhi.exe" -lr>"%PINemHiPath%\supported.txt"
 
 REM We will select the right parsing routine
 SET ISTEXT=%3
@@ -91,7 +93,7 @@ REM we now clean temp files
 rmdir "%PINemHiHS%\%1" /s/q
 REM delete TXT files with size 0 as they are empty
 for /f %%I in ("%PINemHiHS%\%TEMPTXT%.txt") do if %%~zI==0 del "%PINemHiHS%\%TEMPTXT%.txt"
-CALL python process_text.py "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiHS%\%TEMPTXT%.txt" UltraDMD
+CALL python "%HiScoreDir%\reformat_scores.py" "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiHS%\%TEMPTXT%.txt" UltraDMD
 GOTO PNG
 
 :POSTIT
@@ -119,7 +121,7 @@ set /a "HS=idx-10"
         set /a HS += 1
         GOTO While
 :EndWhile
-CALL python process_text.py "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiHS%\%TEMPTXT%.txt" PostIt
+CALL python "%HiScoreDir%\reformat_scores.py" "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiHS%\%TEMPTXT%.txt" PostIt
 GOTO PNG
 
 :NVRAM
@@ -141,6 +143,7 @@ for /f %%I in ("%PINemHiHS%\%TEMPTXT%.txt") do if %%~zI==0 del "%PINemHiHS%\%TEM
 GOTO PNG
 
 :PNG
+cd %HiScoreDir%
 REM Call ImageMagick convert to create a PNG from the hiscore TXT file (note color, font and other options available)
 REM Choose to size the resulting image based on the background file you use
 REM if you'd like a monospaced output, add -font Courier
@@ -149,8 +152,8 @@ IF EXIST "%PINemHiHS%\%TEMPTXT%.txt" (
     REM Fill with black background as that is the transparent color used by PinUP Popper
     REM type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -gravity center -fill grey -size 1776x445 caption:@- "%PINemHiPNG%\%TEMPTXT%.png"
     REM type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -fill grey pango:@- -resize 1776x445 "%PINemHiPNG%\%TEMPTXT%.png"
-    CALL python text_to_image.py "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiPNG%\%TEMPTXT%.png" %Font%
-    CALL python text_to_video.py --text_color orange --text_speed 120 "%PINemHiHS%\%TEMPTXT%.txt" "%OUTPUT%\%~2%Suffix%.mp4" %Video_Font%
+    CALL python "%HiScoreDir%\text_to_image.py" "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiPNG%\%TEMPTXT%.png" "%Font%"
+    CALL python "%HiScoreDir%\text_to_video.py" --text_color orange --text_speed 120 "%PINemHiHS%\%TEMPTXT%.txt" "%OUTPUT%\%~2%Suffix%.mp4" "%Video_Font%"
     )
 
 REM Call ImageMagick composite to merge previous PNG with the background image, and center it

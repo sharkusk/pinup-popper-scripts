@@ -44,7 +44,7 @@ def create_video_from_text(text, args):
             size = moviesize)
 
     # WRITE TO A FILE
-    final.set_duration(duration).write_videofile(args.save_name, fps=int(args.fps)) #, preset="ultrafast")
+    final.set_duration(duration).write_videofile(args.save_name, fps=int(args.fps), preset="ultrafast")
 
 def video_file(fname):
     file_type = os.path.splitext(fname)[1] 

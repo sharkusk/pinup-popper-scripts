@@ -1,6 +1,6 @@
 import argparse
 
-def process_postit(text):
+def process_ultradmd(text):
     lines = text.strip().splitlines()
     # First line is HIGHEST SCORES
     new_text = lines[0]
@@ -15,7 +15,7 @@ def process_postit(text):
         new_text = '\n'.join([new_text, hi_score])
     return new_text + '\n'
 
-def process_ultradmd(text):
+def process_postit(text):
     lines = text.strip().splitlines()
     # First line is HIGHEST SCORES
     new_text = lines[0]
