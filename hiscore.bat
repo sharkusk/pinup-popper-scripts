@@ -42,6 +42,7 @@ REM START OF VARIABLES DECLARATION
     SET "Suffix="
 
     SET "Font=c:\PinUPSystem\Utils\PINemHi\PNGs\ConsolateElf-X33XP.ttf"
+    SET "Video_Font=HighSpeed.ttf"
 
 REM END OF VARIABLES DECLARATION
 
@@ -149,7 +150,7 @@ IF EXIST "%PINemHiHS%\%TEMPTXT%.txt" (
     REM type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -gravity center -fill grey -size 1776x445 caption:@- "%PINemHiPNG%\%TEMPTXT%.png"
     REM type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -fill grey pango:@- -resize 1776x445 "%PINemHiPNG%\%TEMPTXT%.png"
     CALL python text_to_image.py "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiPNG%\%TEMPTXT%.png" %Font%
-    CALL python text_to_video.py --text_color orange --text_speed 120 "%PINemHiHS%\%TEMPTXT%.txt" "%OUTPUT%\%~2%Suffix%.mp4" ./HighSpeed.ttf
+    CALL python text_to_video.py --text_color orange --text_speed 120 "%PINemHiHS%\%TEMPTXT%.txt" "%OUTPUT%\%~2%Suffix%.mp4" %Video_Font%
     )
 
 REM Call ImageMagick composite to merge previous PNG with the background image, and center it
