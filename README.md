@@ -90,7 +90,7 @@ High scores:
 4) KINGDICE        55,000
 ```
 
-### Install
+#### Install
 
 This script has no dependencies.  It can be run standalone or as part of the hiscore.bat script by copying them to the PinemHiHS directory and inserting the following lines at the end of the :ULTRADMD and :POSTIT sections (before the line `GOTO PNG`):
 
@@ -101,3 +101,10 @@ CALL python "%PINemHiHS%\reformat_scores.py" "%PINemHiHS%\%TEMPTXT%.txt" "%PINem
 ```
 CALL python "%PINemHiHS%\reformat_scores.py" "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiHS%\%TEMPTXT%.txt" PostIt
 ```
+
+### text_to_image.py
+
+This is a replacement for the default text rendering used by the high score script.  The main advantage is that it supports multiple columns for high score files that are large.
+
+Here's an example of Medieval Madness:
+
