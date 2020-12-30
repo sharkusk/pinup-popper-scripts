@@ -80,7 +80,7 @@ ELDER 50000
 
 After reformatting we get:
 
-```python reformat_scores.py CupheadPro.txt test/hiscore/CupheadPro-2.txt PostIt```
+```python reformat_scores.py CupheadPro.txt CupheadPro-2.txt PostIt```
 
 ```
 High scores:
@@ -92,7 +92,7 @@ High scores:
 
 #### Install
 
-This script has no dependencies.  It can be run standalone or as part of the hiscore.bat script by copying them to the PinemHiHS directory and inserting the following lines at the end of the :ULTRADMD and :POSTIT sections (before the line `GOTO PNG`):
+This script has no dependencies.  It can be run standalone or as part of the high score batch file script by copying it to the PinemHiHS directory and inserting the following lines at the end of the :ULTRADMD and :POSTIT sections (before the line `GOTO PNG`):
 
 ```
 CALL python "%PINemHiHS%\reformat_scores.py" "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiHS%\%TEMPTXT%.txt" UltraDMD
@@ -108,7 +108,7 @@ This is a replacement for the default text rendering used by the high score scri
 
 Here's a somewhat extreme example of Medieval Madness high scores formatted for a DMD sized area:
 
-```python text_to_image.py --text_color "#ff5820" --max_lines 8 mm_109c.txt mm_109c.png test/hiscore/HighSpeed.ttf```
+```python text_to_image.py --text_color "#ff5820" --max_lines 8 mm_109c.txt mm_109c.png HighSpeed.ttf```
 
 ![mm_109c.png](https://user-images.githubusercontent.com/4368882/103378788-6aaae080-4a98-11eb-9463-7352a1983e7c.png)
 
@@ -128,7 +128,7 @@ To use it in the high score batch file, copy the script to the PINemHiHS directo
 
 with
 
-```CALL python --max_lines 8 --text_color "#ff5820" "%PINemHiHS%\text_to_image.py" "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiPNG%\%TEMPTXT%.png" "%Font%"```
+```CALL python "%PINemHiHS%\text_to_image.py" --max_lines 8 --text_color "#ff5820" "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiPNG%\%TEMPTXT%.png" "%Font%"```
 
 ### text_to_image.py
 
@@ -150,4 +150,6 @@ To use it in the high score batch file, copy the script to the PINemHiHS directo
 
 with
 
-```CALL python "%HiScoreDir%\text_to_video.py" --text_color "#ff5820" --text_speed 120 "%PINemHiHS%\%TEMPTXT%.txt" "%OUTPUT%\%~2%Suffix%.mp4" "%Font%"```
+```CALL python "%PINemHiHS%\text_to_video.py" --text_color "#ff5820" --text_speed 120 "%PINemHiHS%\%TEMPTXT%.txt" "%OUTPUT%\%~2%Suffix%.mp4" "%Font%"```
+
+NOTE: I've noticed that moviepy requires the font path to include double `\\`.
