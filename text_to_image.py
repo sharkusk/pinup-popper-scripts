@@ -84,7 +84,7 @@ def create_image_from_text(text, args):
         y = (y2 - y1 - h)/2 + y1
 
         # Write the text to the image, where (x,y) is the top left corner of the text
-        draw.text((x, y), t, align='center', font=font, color=args.text_color)
+        draw.text((x, y), t, align='center', font=font, fill=args.text_color)
 
         # Draw the bounding box to show that this works
         # draw.rectangle([x1, y1, x2, y2])
