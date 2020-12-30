@@ -112,6 +112,12 @@ Here's a somewhat extreme example of Medieval Madness high scores formatted for 
 
 ![mm_109c.png](https://user-images.githubusercontent.com/4368882/103378788-6aaae080-4a98-11eb-9463-7352a1983e7c.png)
 
+Here's an example for Attack from Mars with a different font:
+
+```python text_to_image.py --text_color "#ff5820" --max_lines 8 afm_113b.txt afm_113b.png Hack-Bold.ttf```
+
+![afm_113b](https://user-images.githubusercontent.com/4368882/103379284-07ba4900-4a9a-11eb-8bcb-392352e8acd4.png)
+
 #### Install
 
 This script has a dependency on the Pillow / PIL Python module.  See the following page for install instructions: https://pillow.readthedocs.io/en/stable/installation.html
