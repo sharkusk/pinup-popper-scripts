@@ -134,9 +134,9 @@ with
 
 This script uses video instead of an image to display high scores.  Some examples:
 
-![afm_113b](https://user-images.githubusercontent.com/4368882/103379950-405b2200-4a9c-11eb-9291-f490505a1de3.mp4)
+![afm_113b.mp4](https://user-images.githubusercontent.com/4368882/103379950-405b2200-4a9c-11eb-9291-f490505a1de3.mp4)
 
-![mm_109c.png](https://user-images.githubusercontent.com/4368882/103378913-cc6b4a80-4a98-11eb-90e1-b0585a83773c.mp4)
+![mm_109c.mp4](https://user-images.githubusercontent.com/4368882/103378913-cc6b4a80-4a98-11eb-90e1-b0585a83773c.mp4)
 
 #### Install
 
