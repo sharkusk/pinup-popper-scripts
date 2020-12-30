@@ -108,11 +108,11 @@ This is a replacement for the default text rendering used by the high score scri
 
 Here's a somewhat extreme example of Medieval Madness high scores formatted for a DMD sized area:
 
-```python text_to_image.py --text_color "#ff5820" --max_lines 8 mm_109c.txt mm_109c.png HighSpeed.ttf```
+```python text_to_image.py --text_color "#ff5820" --max_lines 8 mm_109c.txt mm_109c.png Hack-Bold.ttf```
 
-![mm_109c.png](https://user-images.githubusercontent.com/4368882/103378788-6aaae080-4a98-11eb-9463-7352a1983e7c.png)
+![mm_109c](https://user-images.githubusercontent.com/4368882/103383285-07747a80-4aa7-11eb-8805-a3998e05e456.png)
 
-Here's an example for Attack from Mars with a different font:
+Here's another example for Attack from Mars:
 
 ```python text_to_image.py --text_color "#ff5820" --max_lines 8 afm_113b.txt afm_113b.png Hack-Bold.ttf```
 
