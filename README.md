@@ -104,7 +104,10 @@ CALL python "%PINemHiHS%\reformat_scores.py" "%PINemHiHS%\%TEMPTXT%.txt" "%PINem
 
 ### text_to_image.py
 
-This is a replacement for the default text rendering used by the high score script.  The main advantage is that it supports multiple columns for high score files that are large.
+This is a replacement for the default text rendering used by the high score script.  The main advantage is that it supports multiple columns for high score files that are many lines.  It will also automatically maximize the font size to fit.
 
-Here's an example of Medieval Madness:
+Here's a somewhat extreme example of Medieval Madness high scores formatted for a DMD sized area:
 
+```python text_to_image.py --text_color "#ff5820" --max_lines 8 mm_109c.txt mm_109c.png test/hiscore/HighSpeed.ttf```
+
+![mm_109c.png](https://user-images.githubusercontent.com/4368882/103378788-6aaae080-4a98-11eb-9463-7352a1983e7c.png)
