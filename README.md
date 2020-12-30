@@ -32,11 +32,13 @@ This [AutoHotKey](https://www.autohotkey.com/) script launches and minimizes Pin
 
 These files are designed to work in conjunction with the high score script found here: https://www.nailbuster.com/wikipinup/doku.php?id=high_scores_setup
 
+They have been tested using Python 3.9, but likely work with other versions of Python.
+
 ### reformat_scores.py
 
-When using the default high score script, the UltraDMD high scores are typically formatted as follows:
+When using the default high score batch file the text files generated for UltraDMD and PostIt tables are different than what is typically provided by the PINemHiHS program.  This script reformats them to match.
 
-```python reformat_scores.py leprechaun.txt leprechaun-2.txt UltraDMD```
+the UltraDMD high scores are typically formatted as follows:
 
 ```
 HIGH SCORES
@@ -54,6 +56,8 @@ SCO
 ```
 
 The reformat script converts the above to the following:
+
+```python reformat_scores.py leprechaun.txt leprechaun-2.txt UltraDMD```
 
 ```
 HIGH SCORES
@@ -84,4 +88,16 @@ High scores:
 2) MUGMAN          70,000
 3) DEVIL           60,000
 4) KINGDICE        55,000
+```
+
+### Install
+
+This script has no dependencies.  It can be run standalone or as part of the hiscore.bat script by copying them to the PinemHiHS directory and inserting the following lines at the end of the :ULTRADMD and :POSTIT sections (before the line `GOTO PNG`):
+
+```
+CALL python "%PINemHiHS%\reformat_scores.py" "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiHS%\%TEMPTXT%.txt" UltraDMD
+```
+
+```
+CALL python "%PINemHiHS%\reformat_scores.py" "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiHS%\%TEMPTXT%.txt" PostIt
 ```
