@@ -111,3 +111,16 @@ Here's a somewhat extreme example of Medieval Madness high scores formatted for 
 ```python text_to_image.py --text_color "#ff5820" --max_lines 8 mm_109c.txt mm_109c.png test/hiscore/HighSpeed.ttf```
 
 ![mm_109c.png](https://user-images.githubusercontent.com/4368882/103378788-6aaae080-4a98-11eb-9463-7352a1983e7c.png)
+
+#### Install
+
+This script has a dependency on the Pillow / PIL Python module.  See the following page for install instructions: https://pillow.readthedocs.io/en/stable/installation.html
+
+To use it in the high score batch file, copy the script to the PINemHiHS directory and replace the following line:
+
+```type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -gravity center -fill grey -size 1776x445 caption:@- "%PINemHiPNG%\%TEMPTXT%.png"```
+
+with
+
+```CALL python --max_lines 8 "%PINemHiHS%\text_to_image.py" "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiPNG%\%TEMPTXT%.png" "%Font%"```
+
