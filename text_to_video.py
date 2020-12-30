@@ -44,18 +44,22 @@ def create_video_from_text(text, args):
             size = moviesize)
 
     # WRITE TO A FILE
-    final.set_duration(duration).write_videofile(args.save_name, fps=int(args.fps), preset="ultrafast")
+    file_type = os.path.splitext(args.save_name)[1] 
+    if file_type == '.gif':
+        final.set_duration(duration).write_gif(args.save_name, fps=int(args.fps))
+    else:
+        final.set_duration(duration).write_videofile(args.save_name, fps=int(args.fps), preset="ultrafast")
 
 def video_file(fname):
     file_type = os.path.splitext(fname)[1] 
-    if file_type not in ['.mp4', '.avi']:
+    if file_type not in ['.mp4', '.avi', '.gif']:
         raise argparse.ArgumentTypeError
     return fname
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("text_file", help="Text file to convert to image or video")
-    parser.add_argument("save_name", type=video_file, help="File path of output video file (.mp4 or .avi)")
+    parser.add_argument("save_name", type=video_file, help="File path of output video file (.mp4, .avi, or .gif)")
     parser.add_argument("font", help="Full path to TrueType or OpenType font file")
     parser.add_argument("--size", help="Size of image or video to generate in format of WxH (e.g. '1776x445')", default="1776x445")
     parser.add_argument("--background_color", help="Background color", default="black")
