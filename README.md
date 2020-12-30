@@ -130,9 +130,9 @@ with
 
 ```CALL python "%PINemHiHS%\text_to_image.py" --max_lines 8 --text_color "#ff5820" "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiPNG%\%TEMPTXT%.png" "%Font%"```
 
-### text_to_image.py
+### text_to_video.py
 
-This script uses video instead of an image to display high scores.  Some examples:
+This script generates a scrolling video to display high scores.  Some examples:
 
 ![afm_113b.mp4](https://user-images.githubusercontent.com/4368882/103379950-405b2200-4a9c-11eb-9291-f490505a1de3.mp4)
 
@@ -152,4 +152,4 @@ with
 
 ```CALL python "%PINemHiHS%\text_to_video.py" --text_color "#ff5820" --text_speed 120 "%PINemHiHS%\%TEMPTXT%.txt" "%OUTPUT%\%~2%Suffix%.mp4" "%Font%"```
 
-NOTE: I've noticed that moviepy requires the font path to include double `\\`.
+NOTE: Moviepy requires the font path to use double `\\`.
