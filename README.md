@@ -128,5 +128,26 @@ To use it in the high score batch file, copy the script to the PINemHiHS directo
 
 with
 
-```CALL python --max_lines 8 "%PINemHiHS%\text_to_image.py" "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiPNG%\%TEMPTXT%.png" "%Font%"```
+```CALL python --max_lines 8 --text_color "#ff5820" "%PINemHiHS%\text_to_image.py" "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiPNG%\%TEMPTXT%.png" "%Font%"```
 
+### text_to_image.py
+
+This script uses video instead of an image to display high scores.  Some examples:
+
+https://user-images.githubusercontent.com/4368882/103379950-405b2200-4a9c-11eb-9291-f490505a1de3.mp4
+
+https://user-images.githubusercontent.com/4368882/103378913-cc6b4a80-4a98-11eb-90e1-b0585a83773c.mp4
+
+#### Install
+
+This script uses moviepy.  Install instructions can be found here: https://zulko.github.io/moviepy/install.html  Pay careful attention to the section regarding ImageMagick.
+
+Once installed, this can be used instead of (or in addition to) the image generation in the high score script.  Replace:
+
+To use it in the high score batch file, copy the script to the PINemHiHS directory and replace the following line:
+
+```type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -gravity center -fill grey -size 1776x445 caption:@- "%PINemHiPNG%\%TEMPTXT%.png"```
+
+with
+
+```CALL python "%HiScoreDir%\text_to_video.py" --text_color "#ff5820" --text_speed 120 "%PINemHiHS%\%TEMPTXT%.txt" "%OUTPUT%\%~2%Suffix%.mp4" "%Font%"```
