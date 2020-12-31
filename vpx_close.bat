@@ -1,7 +1,11 @@
-REM VPX Pinup Popper Close Script (by Sharkus)
-REM This entire file should be copied to the "Close Script" found in Popper Setup->Emulators->Launch Setup (Visual Pinball X)
+START "" "[STARTDIR]LAUNCH\PUPCLOSER.EXE" WINTIT "Visual Pinball" 10 1 
 
-START /B "" "[STARTDIR]LAUNCH\PUPCLOSER.EXE" WINTIT "Visual Pinball" 10 1 
+ECHO REM "[STARTDIR]Scripts\hiscore.bat" [?ROM?] "[GAMENAME]" "[?GameType?]">> "[STARTDIR]restore_settings.bat"
 
-CALL [STARTDIR]"restore_settings.bat"
-DEL [STARTDIR]"restore_settings.bat"
+REM Generate HiScore media file
+CALL "[STARTDIR]Scripts\hiscore.bat" [?ROM?] "[GAMENAME]" "[?GameType?]"
+
+CALL "[STARTDIR]restore_settings.bat"
+REM DEL "[STARTDIR]restore_settings.bat"
+
+ECHO REM Reached end...>> "[STARTDIR]restore_settings.bat"

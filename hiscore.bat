@@ -1,4 +1,4 @@
-REM @echo off
+@echo off
 SETLOCAL EnableDelayedExpansion
 
 REM START OF VARIABLES DECLARATION
@@ -28,6 +28,9 @@ REM START OF VARIABLES DECLARATION
     REM Path to VP User files
     SET "UserPath=c:\Visual Pinball\User"
 
+    REM Path to VP User files
+    SET "AliasPath=c:\Visual Pinball\VPinMAME\VPMAlias.txt"
+
     REM Path to 7z
     SET Zexepath="C:\Program Files\7-Zip"
 
@@ -52,6 +55,16 @@ REM Need to change to the PINemHi folder in order for the exe to read its INI
 cd "%PINemHiPath%"
 REM Uncomment the next line to regenerate PINemHi supported roms DB
 REM "%PINemHiPath%\pinemhi.exe" -lr>"%PINemHiPath%\supported.txt"
+
+SET ROM_NAME=%~1
+
+REM Check if our rom file is aliased to another name
+FOR /F "usebackq tokens=1,2 delims=," %%i in ("%AliasPath%") do (
+    if %%i==%ROM_NAME% (
+        SET ROM_NAME=%%j
+        REM @ECHO Found aliased ROM, using %ROM_NAME%
+    )
+)
 
 REM We will select the right parsing routine
 SET ISTEXT=%3
@@ -78,7 +91,7 @@ GOTO PNG
 
 :ULTRADMD
 REM Start of ULTRADMD processing
-SET TEMPTXT=%~1
+SET TEMPTXT=%ROM_NAME%
 SET OUTPUT=%POPVPMedia%
 REM extract hiscore files from iStor
 @echo HIGHEST SCORES>"%PINemHiHS%\%TEMPTXT%.txt"
@@ -98,7 +111,7 @@ GOTO PNG
 
 :POSTIT
 REM Start POSIT is file processing
-SET TEMPTXT=%~1
+SET TEMPTXT=%ROM_NAME%
 SET TEMPTXT=%TEMPTXT:"=%
 SET OUTPUT=%POPVPMedia%
 REM if there is no PostIT file, exit
@@ -126,7 +139,7 @@ GOTO PNG
 
 :NVRAM
 REM Start of NVRAM processing
-SET TEMPTXT=%~1
+SET TEMPTXT=%ROM_NAME%
 SET OUTPUT=%POPVPMedia%
 
 REM if there is no nvram file, exit
@@ -152,7 +165,12 @@ IF EXIST "%PINemHiHS%\%TEMPTXT%.txt" (
     REM type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -gravity center -fill grey -size 1776x445 caption:@- "%PINemHiPNG%\%TEMPTXT%.png"
     REM type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -fill grey pango:@- -resize 1776x445 "%PINemHiPNG%\%TEMPTXT%.png"
     REM CALL python "%HiScoreDir%\text_to_image.py" "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiPNG%\%TEMPTXT%.png" "%Font%" --max_lines 8 
-    CALL python "%HiScoreDir%\text_to_video.py" --text_color #ff5820 --text_speed 120 "%PINemHiHS%\%TEMPTXT%.txt" "%OUTPUT%\%~2%Suffix%.mp4" "%Video_Font%"
+    CALL python "%HiScoreDir%\text_to_video.py" --text_color #ff5820 --text_speed 120 "%PINemHiHS%\%TEMPTXT%.txt" "%OUTPUT%\temp_encode.mp4" "%Video_Font%"
+    )
+
+REM We used a temp file during creation process to avoid getting PinUp confused seeing the file partway done, now move it
+IF EXIST "%OUTPUT%\temp_encode.mp4" (
+    MOVE /Y "%OUTPUT%\temp_encode.mp4" "%OUTPUT%\%~2%Suffix%.mp4" 
     )
 
 REM Call ImageMagick composite to merge previous PNG with the background image, and center it
