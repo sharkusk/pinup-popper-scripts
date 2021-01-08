@@ -11,11 +11,15 @@ REM origsound - use the original rom sound with a forced backglass
 REM altsound - use the altsound with a forced backglass
 REM pinsound - use the pinsound with a forced backglass
 
+@ECHO OFF
+
+ECHO VPX Launch Starting... ROM: [?ROM?]> "[STARTDIR]\scripts\logs\debug.log"
+
 START "" "[STARTDIR]Launch\VPXSTARTER.exe" 30 10 60 “Visual Pinball Player” 2
 CD /d "[DIREMU]"
 
 REM Initialize a file that is going to restore any settings we change when we close
-ECHO @ECHO OFF> "[STARTDIR]restore_settings.bat"
+ECHO @ECHO OFF> "[STARTDIR]restore_settings.bat" 
 
 SET use_backglass=0
 
