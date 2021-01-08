@@ -1,13 +1,23 @@
+@ECHO OFF
 SET ROM=%1
 SET ALTMODE=%2
 SET RESTOREFILE=%3
+
+ECHO REM %ROM%, %ALTMODE%>> %RESTOREFILE%
 
 REM Store the current settings
 REM QUERY returns multiple lines, we only care about the actual value, so extract and store in variable
 FOR /F "skip=2 tokens=2,*" %%A IN ('REG QUERY "HKCU\Software\Freeware\Visual PinMame\%ROM%" /v "sound_mode"') DO SET "sound_mode=%%B"
 FOR /F "skip=2 tokens=2,*" %%A IN ('REG QUERY "HKCU\Software\Freeware\Visual PinMame\%ROM%" /v "resampling_quality"') DO SET "resampling_quality=%%B"
+FOR /F "skip=2 tokens=2,*" %%A IN ('REG QUERY "HKCU\Software\Visual Pinball\VP10\Player" /v "FullScreen"') DO SET "fullscreen=%%B"
 
-ECHO REM %ROM%, %ALTMODE%>> %RESTOREFILE%
+REM Ghostbusters crashes if run in full screen exclusive mode...
+IF "%ROM%"=="spagb_100" (
+    REG ADD "HKCU\Software\Visual Pinball\VP10\Player" /v FullScreen /t REG_DWORD /d 0 /f
+
+    REM -----------  CLEANUP ON CLOSE -----------
+    ECHO REG ADD "HKCU\Software\Visual Pinball\VP10\Player" /v FullScreen /t REG_DWORD /d %fullscreen% /f>> %RESTOREFILE%
+)
 
 IF %ALTMODE%=="origsound" (
     REG ADD "HKCU\Software\Freeware\Visual PinMame\%ROM%" /v sound_mode /t REG_DWORD /d 0 /f
