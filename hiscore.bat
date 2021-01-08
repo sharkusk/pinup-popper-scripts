@@ -79,8 +79,8 @@ GOTO NVRAM
 
 :FUTURE
 REM Start of fpram processing
-SET TEMPTXT=%~2
 SET OUTPUT=%POPFPMedia%
+SET TEMPTXT=%~2
 REM if there is no FP nvram file, exit
 IF NOT EXIST "%FPNVRamPath%\%~2.fpram" exit /B
 REM call PINemHi pipped to a txt file
@@ -91,8 +91,8 @@ GOTO PNG
 
 :ULTRADMD
 REM Start of ULTRADMD processing
-SET TEMPTXT=%ROM_NAME%
 SET OUTPUT=%POPVPMedia%
+SET TEMPTXT=%ROM_NAME%
 REM extract hiscore files from iStor
 @echo HIGHEST SCORES>"%PINemHiHS%\%TEMPTXT%.txt"
 %Zexepath%\7z.exe x -o"%PINemHiHS%" "%UserPath%\VPReg.stg" %1
@@ -111,9 +111,9 @@ GOTO PNG
 
 :POSTIT
 REM Start POSIT is file processing
+SET OUTPUT=%POPVPMedia%
 SET TEMPTXT=%ROM_NAME%
 SET TEMPTXT=%TEMPTXT:"=%
-SET OUTPUT=%POPVPMedia%
 REM if there is no PostIT file, exit
 IF NOT EXIST "%UserPath%\%TEMPTXT%" exit /B
 REM We read the PostIT file into an Array
@@ -139,8 +139,8 @@ GOTO PNG
 
 :NVRAM
 REM Start of NVRAM processing
-SET TEMPTXT=%ROM_NAME%
 SET OUTPUT=%POPVPMedia%
+SET TEMPTXT=%ROM_NAME%
 
 REM if there is no nvram file, exit
 IF NOT EXIST "%NVRamPath%\%TEMPTXT%.nv" exit /B
@@ -159,6 +159,20 @@ GOTO PNG
 REM Call ImageMagick convert to create a PNG from the hiscore TXT file (note color, font and other options available)
 REM Choose to size the resulting image based on the background file you use
 REM if you'd like a monospaced output, add -font Courier
+IF NOT EXIST "%PINemHiHS%\%TEMPTXT%.txt" goto DONE
+
+REM Check if we have already generated a high score for a matching file, don't waste time recreating
+SET "CompResults=Not Checked"
+IF EXIST "%PINemHiHS%\%TEMPTXT%-done.txt" (
+    FOR /F "skip=1 tokens=*" %%G IN ('FC "%PINemHiHS%\%TEMPTXT%-done.txt" "%PINemHiHS%\%TEMPTXT%.txt"') DO SET "CompResults=%%G"
+)
+
+REM Check outside of IF statement to allow delayed variable expansion to take place
+IF "%CompResults%"=="FC: no differences encountered" (
+    DEL "%PINemHiHS%\%TEMPTXT%.txt"
+    GOTO DONE
+)
+
 IF EXIST "%PINemHiHS%\%TEMPTXT%.txt" (
     REM We are going to fill in the DMD area with the high scores so use the DMD size
     REM Fill with black background as that is the transparent color used by PinUP Popper
@@ -166,19 +180,21 @@ IF EXIST "%PINemHiHS%\%TEMPTXT%.txt" (
     REM type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -fill grey pango:@- -resize 1776x445 "%PINemHiPNG%\%TEMPTXT%.png"
     REM CALL python "%HiScoreDir%\text_to_image.py" "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiPNG%\%TEMPTXT%.png" "%Font%" --max_lines 8 
     CALL python "%HiScoreDir%\text_to_video.py" --text_color #ff5820 --text_speed 120 "%PINemHiHS%\%TEMPTXT%.txt" "%OUTPUT%\temp_encode.mp4" "%Video_Font%"
-    )
+    MOVE /Y "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiHS%\%TEMPTXT%-done.txt"
+)
 
 REM We used a temp file during creation process to avoid getting PinUp confused seeing the file partway done, now move it
 IF EXIST "%OUTPUT%\temp_encode.mp4" (
     MOVE /Y "%OUTPUT%\temp_encode.mp4" "%OUTPUT%\%~2%Suffix%.mp4" 
-    )
+)
 
 REM Call ImageMagick composite to merge previous PNG with the background image, and center it
 IF EXIST "%PINemHiPNG%\%TEMPTXT%.png" (
     "%ImageMagick%\composite.exe" "%PINemHiPNG%\%TEMPTXT%.png" "%PINemHiPNG%\%Background%" -gravity center "%OUTPUT%\%~2%Suffix%.png"
     REM Cleanup temp PNGs
     del "%PINemHiPNG%\%TEMPTXT%.png"
-    )
+)
 
+:DONE
 REM done
 exit /B
