@@ -169,8 +169,8 @@ IF EXIST "%PINemHiHS%\%TEMPTXT%-done.txt" (
 
 REM Check outside of IF statement to allow delayed variable expansion to take place
 IF "%CompResults%"=="FC: no differences encountered" (
+    REM We've already generated a video for this high score file, so no need to regenerate
     DEL "%PINemHiHS%\%TEMPTXT%.txt"
-    GOTO DONE
 )
 
 IF EXIST "%PINemHiHS%\%TEMPTXT%.txt" (
@@ -179,13 +179,14 @@ IF EXIST "%PINemHiHS%\%TEMPTXT%.txt" (
     REM type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -gravity center -fill grey -size 1776x445 caption:@- "%PINemHiPNG%\%TEMPTXT%.png"
     REM type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -fill grey pango:@- -resize 1776x445 "%PINemHiPNG%\%TEMPTXT%.png"
     REM CALL python "%HiScoreDir%\text_to_image.py" "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiPNG%\%TEMPTXT%.png" "%Font%" --max_lines 8 
-    CALL python "%HiScoreDir%\text_to_video.py" --text_color #ff5820 --text_speed 120 "%PINemHiHS%\%TEMPTXT%.txt" "%OUTPUT%\temp_encode.mp4" "%Video_Font%"
+    CALL python "%HiScoreDir%\text_to_video.py" --text_color #ff5820 --text_speed 120 "%PINemHiHS%\%TEMPTXT%.txt" "%OUTPUT%\%~2%Suffix%-new.mp4" "%Video_Font%"
     MOVE /Y "%PINemHiHS%\%TEMPTXT%.txt" "%PINemHiHS%\%TEMPTXT%-done.txt"
 )
 
 REM We used a temp file during creation process to avoid getting PinUp confused seeing the file partway done, now move it
-IF EXIST "%OUTPUT%\temp_encode.mp4" (
-    MOVE /Y "%OUTPUT%\temp_encode.mp4" "%OUTPUT%\%~2%Suffix%.mp4" 
+IF EXIST "%OUTPUT%\%~2%Suffix%-new.mp4" (
+    REM This can fail if Pinup is currently playing the video. :(  Maybe next time we will be able to move it.
+    MOVE /Y "%OUTPUT%\%~2%Suffix%-new.mp4" "%OUTPUT%\%~2%Suffix%.mp4" 
 )
 
 REM Call ImageMagick composite to merge previous PNG with the background image, and center it
