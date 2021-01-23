@@ -49,6 +49,8 @@ REM START OF VARIABLES DECLARATION
     SET "Video_Font=c:\\PinUPSystem\\Utils\\Fonts\\HIGHSPEED.TTF"
 
     SET "HiScoreDir=c:\PinUPSystem\Scripts"
+
+    SET "LogPath=c:\PinUPSystem\scripts\logs\debug.log"
 REM END OF VARIABLES DECLARATION
 
 REM Need to change to the PINemHi folder in order for the exe to read its INI
@@ -62,7 +64,7 @@ REM Check if our rom file is aliased to another name
 FOR /F "usebackq tokens=1,2 delims=," %%i in ("%AliasPath%") do (
     if %%i==%ROM_NAME% (
         SET ROM_NAME=%%j
-        REM @ECHO Found aliased ROM, using %ROM_NAME%
+        ECHO Found aliased ROM, using %ROM_NAME%>> %LogPath%
     )
 )
 
@@ -79,6 +81,7 @@ GOTO NVRAM
 
 :FUTURE
 REM Start of fpram processing
+ECHO Getting Future Pinball High Score>> %LogPath%
 SET OUTPUT=%POPFPMedia%
 SET TEMPTXT=%~2
 REM if there is no FP nvram file, exit
@@ -91,6 +94,7 @@ GOTO PNG
 
 :ULTRADMD
 REM Start of ULTRADMD processing
+ECHO Getting UltraDMD High Score>> %LogPath%
 SET OUTPUT=%POPVPMedia%
 SET TEMPTXT=%ROM_NAME%
 REM extract hiscore files from iStor
@@ -111,6 +115,7 @@ GOTO PNG
 
 :POSTIT
 REM Start POSIT is file processing
+ECHO Getting PostIt High Score>> %LogPath%
 SET OUTPUT=%POPVPMedia%
 SET TEMPTXT=%ROM_NAME%
 SET TEMPTXT=%TEMPTXT:"=%
@@ -139,6 +144,7 @@ GOTO PNG
 
 :NVRAM
 REM Start of NVRAM processing
+ECHO Getting PinMAME NVRAM High Score>> %LogPath%
 SET OUTPUT=%POPVPMedia%
 SET TEMPTXT=%ROM_NAME%
 
@@ -159,9 +165,11 @@ GOTO PNG
 REM Call ImageMagick convert to create a PNG from the hiscore TXT file (note color, font and other options available)
 REM Choose to size the resulting image based on the background file you use
 REM if you'd like a monospaced output, add -font Courier
+ECHO Checking if "%PINemHiHS%\%TEMPTXT%.txt" exists>> %LogPath%
 IF NOT EXIST "%PINemHiHS%\%TEMPTXT%.txt" goto DONE
 
 REM Check if we have already generated a high score for a matching file, don't waste time recreating
+ECHO Found high score file. Checking if high score has changed...>> %LogPath%
 SET "CompResults=Not Checked"
 IF EXIST "%PINemHiHS%\%TEMPTXT%-done.txt" (
     FOR /F "skip=1 tokens=*" %%G IN ('FC "%PINemHiHS%\%TEMPTXT%-done.txt" "%PINemHiHS%\%TEMPTXT%.txt"') DO SET "CompResults=%%G"
@@ -170,10 +178,12 @@ IF EXIST "%PINemHiHS%\%TEMPTXT%-done.txt" (
 REM Check outside of IF statement to allow delayed variable expansion to take place
 IF "%CompResults%"=="FC: no differences encountered" (
     REM We've already generated a video for this high score file, so no need to regenerate
+    ECHO High score is unchanged!>> %LogPath%
     DEL "%PINemHiHS%\%TEMPTXT%.txt"
 )
 
 IF EXIST "%PINemHiHS%\%TEMPTXT%.txt" (
+    ECHO New High Score detected.  Generating high score image or video.>> %LogPath%
     REM We are going to fill in the DMD area with the high scores so use the DMD size
     REM Fill with black background as that is the transparent color used by PinUP Popper
     REM type "%PINemHiHS%\%TEMPTXT%.txt" | "%ImageMagick%\convert.exe" -font %Font% -background black -gravity center -fill grey -size 1776x445 caption:@- "%PINemHiPNG%\%TEMPTXT%.png"
@@ -185,17 +195,20 @@ IF EXIST "%PINemHiHS%\%TEMPTXT%.txt" (
 
 REM We used a temp file during creation process to avoid getting PinUp confused seeing the file partway done, now move it
 IF EXIST "%OUTPUT%\%~2%Suffix%-new.mp4" (
+    ECHO Moving high score video file to PinUP>> %LogPath%
     REM This can fail if Pinup is currently playing the video. :(  Maybe next time we will be able to move it.
-    MOVE /Y "%OUTPUT%\%~2%Suffix%-new.mp4" "%OUTPUT%\%~2%Suffix%.mp4" 
+    MOVE /Y "%OUTPUT%\%~2%Suffix%-new.mp4" "%OUTPUT%\%~2%Suffix%.mp4" 2>> %LogPath%
 )
 
 REM Call ImageMagick composite to merge previous PNG with the background image, and center it
 IF EXIST "%PINemHiPNG%\%TEMPTXT%.png" (
+    ECHO Creating high score png for PinUP>> %LogPath%
     "%ImageMagick%\composite.exe" "%PINemHiPNG%\%TEMPTXT%.png" "%PINemHiPNG%\%Background%" -gravity center "%OUTPUT%\%~2%Suffix%.png"
     REM Cleanup temp PNGs
     del "%PINemHiPNG%\%TEMPTXT%.png"
 )
 
 :DONE
+ECHO High score processing complete.>> %LogPath%
 REM done
 exit /B

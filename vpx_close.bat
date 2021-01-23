@@ -52,3 +52,4 @@ REM DEL "%STARTDIR%restore_settings.bat"
 
 ECHO Settings have been restored.>> "%STARTDIR%\scripts\logs\debug.log"
 ECHO VPX close script end>> "%STARTDIR%\scripts\logs\debug.log"
+exit /B

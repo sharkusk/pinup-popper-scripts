@@ -118,3 +118,4 @@ IF %use_backglass%==1 (
     )
 )
 ECHO VPX launch script complete>> "%STARTDIR%\scripts\logs\debug.log"
+exit /B
