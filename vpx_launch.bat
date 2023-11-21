@@ -117,5 +117,14 @@ IF %use_backglass%==1 (
         ECHO COPY /Y "%DIRROM%\%ROM%.zip.pinup" "%DIRROM%\%ROM%.zip">> "%STARTDIR%restore_settings.bat"
     )
 )
+
+IF "%CUSTOM3%"=="freezy171" (
+    ECHO Copying "%DIREMU%\VPinMAME\DmdDevice.dll.171" to "%DIREMU%\VPinMAME\DmdDevice.dll">> "%STARTDIR%\scripts\logs\debug.log"
+    COPY /Y "%DIREMU%\VPinMAME\DmdDevice.dll.171" "%DIREMU%\VPinMAME\DmdDevice.dll"
+
+    REM -----------  CLEANUP ON CLOSE -----------
+    ECHO COPY /Y "%DIREMU%\VPinMAME\DmdDevice.dll.latest" "%DIREMU%\VPinMAME\DmdDevice.dll">> "%STARTDIR%restore_settings.bat"
+)
+
 ECHO VPX launch script complete>> "%STARTDIR%\scripts\logs\debug.log"
 exit /B

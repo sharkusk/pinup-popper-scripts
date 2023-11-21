@@ -52,6 +52,9 @@ IF %ALTMODE%=="pinsound" (
     SET use_backglass=1
 )
 
+REM Skip setting cabinet and pinball test modes, tables should already default to these
+EXIT /B
+
 REM Force cabinet mode to prevent PinMAME splash screen
 FOR /F "skip=2 tokens=2,*" %%A IN ('REG QUERY "HKCU\Software\Freeware\Visual PinMame\%ROM%" /v "cabinet_mode"') DO SET "cabinet_mode=%%B"
 REG ADD "HKCU\Software\Freeware\Visual PinMame\%ROM%" /v cabinet_mode /t REG_DWORD /d 1 /f
